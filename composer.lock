@@ -1,0 +1,59 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "809908879900180a67df49c03326acd5",
+    "packages": [
+        {
+            "name": "gburtini/distributions",
+            "version": "0.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gburtini/Probability-Distributions-for-PHP.git",
+                "reference": "47fa8ae98e50dff2054b2923f591e80b2c4a7d65"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gburtini/Probability-Distributions-for-PHP/zipball/47fa8ae98e50dff2054b2923f591e80b2c4a7d65",
+                "reference": "47fa8ae98e50dff2054b2923f591e80b2c4a7d65",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "gburtini\\Distributions": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Giuseppe Burtini",
+                    "email": "giuseppe@burtini.ca"
+                }
+            ],
+            "description": "PHP implementation of a number of statistical probability distributions: normal, beta, gamma, etc.",
+            "support": {
+                "issues": "https://github.com/gburtini/Probability-Distributions-for-PHP/issues",
+                "source": "https://github.com/gburtini/Probability-Distributions-for-PHP/tree/master"
+            },
+            "time": "2018-04-08T05:56:51+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
+}

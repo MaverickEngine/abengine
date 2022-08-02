@@ -1,0 +1,5 @@
+{
+    "require": {
+        "gburtini/distributions": "^0.0.2"
+    }
+}

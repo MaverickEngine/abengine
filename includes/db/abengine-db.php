@@ -28,7 +28,7 @@ class ABEngineDB {
             container varchar(255) NOT NULL,
             value varchar(255) NOT NULL,
             wins mediumint(9) NOT NULL,
-            losses mediumint(9) NOT NULL,
+            views mediumint(9) NOT NULL,
             UNIQUE KEY test_id (test_id, container, value)
         ) $charset_collate;";
         dbDelta( $abengine_tests_options_sql );

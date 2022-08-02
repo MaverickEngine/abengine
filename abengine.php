@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const ABENGINE_SCRIPT_VERSION = "0.0.1";
-const ABENGINE_DB_VERSION = "0.0.1";
+const ABENGINE_DB_VERSION = "0.0.2";
 
 require_once( plugin_dir_path( __FILE__ ) . 'includes/lib/abengine-abtest.php' );
 
