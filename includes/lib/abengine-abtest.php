@@ -145,6 +145,9 @@ class ABTest {
     private $created_at;
     private $updated_at;
     private $algorithms;
+    private $start_date;
+    private $end_date;
+    private $active;
     
     public function __construct($id = null) {
         $this->algorithms = ABTestAlgorithms::get_algorithms();
@@ -163,6 +166,9 @@ class ABTest {
             "algorithm" => $this->algorithm,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
+            "start_date" => $this->start_date,
+            "end_date" => $this->end_date,
+            "active" => $this->is_active(),
         ];
     }
 
@@ -180,6 +186,9 @@ class ABTest {
         $this->algorithm = $test->algorithm;
         $this->created_at = $test->created_at;
         $this->updated_at = $test->updated_at;
+        $this->start_date = $test->start_date;
+        $this->end_date = $test->end_date;
+        $this->active = $test->active;
         $options = $wpdb->get_results("SELECT * FROM $abengine_tests_options_tablename WHERE test_id = $this->id");
         foreach ($options as $option) {
             $option = new ABTestOption($option->ID, $this->id, $option->container, $option->value, $option->wins, $option->views);
@@ -187,7 +196,7 @@ class ABTest {
         }
     }
 
-    public function create($name, $user_id, $options, $algorithm) {
+    public function create($name, $user_id, $options, $algorithm, $start_date, $end_date) {
         if (!is_array($options)) {
             throw new Exception("ABTest: options is not an array");
         }
@@ -200,8 +209,18 @@ class ABTest {
         }
         $this->created_at = date('Y-m-d H:i:s');
         $this->updated_at = date('Y-m-d H:i:s');
+        $this->start_date = $start_date ? $start_date : date('Y-m-d H:i:s');
+        $this->end_date = $end_date ? $end_date : date("9999-12-31 23:59:59");
+        $this->active = true;
         $test_id = $this->save();
         return $test_id;
+    }
+
+    public function is_active() {
+        if ($this->start_date && $this->end_date) {
+            $now = date('Y-m-d H:i:s');
+            return $now >= date($this->start_date) && $now <= date($this->end_date) && $this->active;
+        }
     }
 
     protected function save() {
@@ -212,7 +231,10 @@ class ABTest {
             'user_id' => $this->user_id,
             'algorithm' => $this->algorithm,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'updated_at' => $this->updated_at,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
+            'active' => $this->active,
         ]);
         $this->test_id = $wpdb->insert_id;
         $options = [];
@@ -228,6 +250,9 @@ class ABTest {
             'algorithm' => $this->algorithm,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
+            'active' => $this->active,
             'options' => $options
         ];
     }
@@ -262,10 +287,25 @@ class ABTest {
             $arms[$option["id"]] = [$option["wins"], $option["views"]];
         }
         $winner = ThompsonSampling::get_winner($arms);
-        $arm = new ABTestOption($winner, $this->id);
-        $arm->record_view();
+        if ($this->is_active()) {
+            $arm = new ABTestOption($winner, $this->id);
+            $arm->record_view();
+        }
         return array_filter($this->options, function($option) use ($winner) {
             return $option["id"] == $winner;
         });
+    }
+
+    public static function get_active_tests() {
+        global $wpdb;
+        $abengine_tests_tablename = $wpdb->prefix . "abengine_tests";
+        // $abengine_tests_options_tablename = $wpdb->prefix . "abengine_tests_options";
+        $tests = $wpdb->get_results("SELECT * FROM $abengine_tests_tablename WHERE start_date <= NOW() AND end_date >= NOW() AND active = 1");
+        $tests_data = [];
+        foreach ($tests as $test) {
+            $test = new ABTest($test->ID);
+            $tests_data[] = $test->get_data();
+        }
+        return $tests_data;
     }
 }

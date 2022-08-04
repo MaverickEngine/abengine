@@ -30,13 +30,17 @@ class ABEngineAPI {
             'methods' => 'GET',
             'callback' => array( $this, 'serve' ),
         ) );
+        register_rest_route( 'abengine/v1', '/active', array(
+            'methods' => 'GET',
+            'callback' => array( $this, 'get_active_tests' ),
+        ) );
     }
 
     public function create_test() {
         try {
             $data = json_decode( file_get_contents( 'php://input' ), true );
             $test = new ABTest();
-            $test_id = $test->create($data['name'], $data['user_id'], $data['options'], $data['algorithm']);
+            $test_id = $test->create($data['name'], $data['user_id'], $data['options'], $data['algorithm'], $data['start_date'], $data['end_date']);
             return rest_ensure_response(['status' => 'success', "test" => $test_id ]);
         } catch (Exception $e) {
             return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );
@@ -87,6 +91,15 @@ class ABEngineAPI {
             $test = new ABTest($request["test_id"]);
             $arm = $test->serve();
             return rest_ensure_response(['status' => 'success', "arm" => $arm]);
+        } catch (Exception $e) {
+            return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );
+        }
+    }
+
+    public function get_active_tests($request) {
+        try {
+            $tests = ABTest::get_active_tests();
+            return rest_ensure_response(['status' => 'success', "tests" => $tests]);
         } catch (Exception $e) {
             return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );
         }

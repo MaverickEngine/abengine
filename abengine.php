@@ -16,19 +16,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const ABENGINE_SCRIPT_VERSION = "0.0.1";
-const ABENGINE_DB_VERSION = "0.0.2";
+const ABENGINE_SCRIPT_VERSION = "0.0.2";
+const ABENGINE_DB_VERSION = "0.0.6";
 
 require_once( plugin_dir_path( __FILE__ ) . 'includes/lib/abengine-abtest.php' );
 
-// function abengine_admin_init() {
-//     if (!is_admin()) {
-//         return;
-//     }
-//     require_once(plugin_basename('includes/admin/abengine-admin.php' ) );
-//     new ABEngineAdmin([]);
-// }
-// add_action( 'init', 'abengine_admin_init' );
+function abengine_admin_init() {
+    if (!is_admin()) {
+        return;
+    }
+    require_once(plugin_basename('includes/admin/abengine-admin.php' ) );
+    new ABEngineAdmin([]);
+}
+add_action( 'init', 'abengine_admin_init' );
 
 function abengine_api_init() {
     require_once(plugin_dir_path( __FILE__ ) . 'includes/api/abengine-api.php' );
@@ -36,11 +36,11 @@ function abengine_api_init() {
 }
 add_action( 'init', 'abengine_api_init' );
 
-// function abengine_post_init() {
-//     require_once( plugin_dir_path( __FILE__ ) . 'includes/post/abengine-post.php' );
-//     new ABEnginePost();
-// }
-// add_action( 'admin_init', 'abengine_post_init', 3 );
+function abengine_client_init() {
+    require_once( plugin_dir_path( __FILE__ ) . 'includes/client/abengine-client.php' );
+    new ABEngineClient();
+}
+add_action( 'init', 'abengine_client_init', 3 );
 
 // Setup database tables
 function abengine_database_setup() {

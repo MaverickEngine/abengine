@@ -36,62 +36,47 @@ function serve() {
 }
 
 const pkg = require('./package.json');
-let config;
-if (test) {
-	config = {
+const config = [
+	{
+		input: "src/abengine-client.js",
+		output: [
+			{
+				sourcemap: true,
+				format: 'iife',
+				name: "abengine_client",
+				file: "dist/abengine-client.js"
+			},
+		],
 		plugins: [
 			nodeResolve({
 				browser: true,
 			}),
 			commonjs(),
-			json()
+			typescript(),
+			json(),
+			!production && serve(),
+			production && terser() && strip()
+		]
+	},
+	{
+		input: "src/abengine-admin.js",
+		output: [
+			{
+				sourcemap: true,
+				format: 'iife',
+				name: "abengine_admin",
+				file: "dist/abengine-admin.js"
+			},
+		],
+		plugins: [
+			nodeResolve({
+				browser: true,
+			}),
+			commonjs(),
+			!production && serve(),
+			production && terser() && strip()
 		]
 	}
-} else {
-	config = [
-		{
-			input: "src/abengine-gutenberg.js",
-			output: [
-				{
-					sourcemap: true,
-					format: 'iife',
-					name: "abengine_gutenberg",
-					file: "dist/abengine-gutenberg.js"
-				},
-			],
-			plugins: [
-				scss(),
-				css({ output: "abengine-gutenberg.css" }),
-				nodeResolve({
-					browser: true,
-				}),
-				commonjs(),
-				typescript(),
-				json(),
-				!production && serve(),
-				production && terser() && strip()
-			]
-		},
-		{
-			input: "src/abengine-admin.js",
-			output: [
-				{
-					sourcemap: true,
-					format: 'iife',
-					name: "abengine_admin",
-					file: "dist/abengine-admin.js"
-				},
-			],
-			plugins: [
-				nodeResolve({
-					browser: true,
-				}),
-				commonjs(),
-				!production && serve(),
-				production && terser() && strip()
-			]
-		}
-	];
-}
+];
 
 export default config;
