@@ -15,9 +15,13 @@ class ABEngineDB {
             ID mediumint(9) NOT NULL AUTO_INCREMENT PRIMARY KEY,
             created_at datetime DEFAULT NOW() NOT NULL,
             updated_at datetime DEFAULT NOW() NOT NULL,
+            start_date datetime DEFAULT NOW() NOT NULL,
+            end_date datetime DEFAULT '9999-12-31' NOT NULL,
+            active tinyint(1) DEFAULT 1 NOT NULL,
             name varchar(255) NOT NULL,
             user_id mediumint(9) NOT NULL,
-            algorithm varchar(255) NOT NULL
+            algorithm varchar(255) NOT NULL,
+            INDEX is_active (active, start_date, end_date)
         ) $charset_collate;";
         dbDelta( $abengine_tests_sql );
 
