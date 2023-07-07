@@ -1,7 +1,9 @@
 <?php
 class ABEngineAdminSettings {
     private $options = [
-        
+        "abengine_server",
+        "abengine_apikey",
+        "abengine_api_server",
     ];
     
     public function __construct() {
@@ -24,7 +26,14 @@ class ABEngineAdminSettings {
         if (!current_user_can('manage_options')) {
             wp_die(__('You do not have sufficient permissions to access this page.'));
         }
-        
+        if (defined('ABENGINE_APIKEY')) {
+            update_option('abengine_apikey', '');
+        }
+        if (defined('ABENGINE_APIKEY')) {
+            $abengine_apikey = ABENGINE_APIKEY;
+        } else {
+            $abengine_apikey = get_option('abengine_apikey');
+        }
         require_once plugin_dir_path( dirname( __FILE__ ) ).'admin/views/settings.php';
     }
 
