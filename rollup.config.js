@@ -10,6 +10,9 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
 import strip from '@rollup/plugin-strip';
 import typescript from '@rollup/plugin-typescript';
+import svelte from 'rollup-plugin-svelte';
+import preprocess from 'svelte-preprocess';
+
 
 const production = !process.env.ROLLUP_WATCH;
 const test = process.env.NODE_ENV === 'test';
@@ -71,6 +74,39 @@ const config = [
 		plugins: [
 			nodeResolve({
 				browser: true,
+			}),
+			commonjs(),
+			!production && serve(),
+			production && terser() && strip()
+		]
+	},
+	{
+		input: "src/abengine-admin-campaigns.js",
+		output: [
+			{
+				sourcemap: true,
+				format: 'iife',
+				name: "abengine_admin",
+				file: "dist/abengine-admin-campaigns.js"
+			},
+		],
+		plugins: [
+			// nodeResolve({
+			// 	browser: true,
+			// 	dedupe: ['svelte']
+			// }),
+			svelte({
+				compilerOptions: {
+					// enable run-time checks when not in production
+					dev: !production
+				},
+				preprocess: preprocess({ defaults: { style: 'scss' } })
+			}),
+			typescript(),
+			css({ output: 'abengine-admin-tests.css' }),
+			nodeResolve({
+				browser: true,
+				dedupe: ['svelte']
 			}),
 			commonjs(),
 			!production && serve(),

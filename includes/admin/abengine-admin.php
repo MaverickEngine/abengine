@@ -7,8 +7,8 @@ class ABEngineAdmin {
         add_action('admin_init', [ $this, 'scripts' ]);
         require_once('abengine-admin-settings.php' );
         new ABEngineAdminSettings();
-        require_once('abengine-admin-tests.php' );
-        new ABEngineAdminTests();
+        require_once('abengine-admin-campaigns.php' );
+        new ABEngineAdminCampaigns();
     }
 
     function menu() {

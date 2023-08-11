@@ -10,6 +10,13 @@ export default class ABEngineAPI implements IAbEngineAPI {
     constructor(restUrl: string, restNonce: string) {
         this.restUrl = restUrl;
         this.restNonce = restNonce;
+        console.log(`ABEngineAPI: ${restUrl}`);
+    }
+
+    async get_tests() {
+        const response = await fetch(`${this.restUrl}tests`);
+        const data = await response.json();
+        return data;
     }
 
     init() {

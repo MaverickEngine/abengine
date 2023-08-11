@@ -19,8 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 const ABENGINE_SCRIPT_VERSION = "0.0.2";
 const ABENGINE_DB_VERSION = "0.0.6";
 
-require_once( plugin_dir_path( __FILE__ ) . 'includes/lib/abengine-abtest.php' );
-
 function abengine_admin_init() {
     if (!is_admin()) {
         return;
