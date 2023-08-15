@@ -1,7 +1,7 @@
 const wp = (window as any).wp;
 export function apiPost(path: string, data: any, uid: string = null) {
     return new Promise((resolve, reject) => {
-        console.log({ uid });
+        // console.log({ uid });
         wp.apiRequest({
             path,
             data,

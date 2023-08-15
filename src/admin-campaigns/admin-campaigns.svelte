@@ -1,22 +1,32 @@
 <script>
+    import Router from 'svelte-spa-router';
     import { abengine, tests } from "./stores.js";
     import { onMount } from "svelte";
-    import { apiGet } from "../libs/ajax.js";
-    // import ABEngineAPI from "../libs/abengine-api.ts";
+    import CreateCampaign from "./create_campaign.svelte";
+    import EditCampaign from './edit_campaign.svelte';
+    import ListCampaigns from "./list_campaigns.svelte";
 
     // console.log($abengine);
     let state = "loading";
+
+    const basepath = "/wp-admin/admin.php?page=abengine_campaigns";
     // let abengine_api = new ABEngineAPI($abengine.restUrl, $abengine.restNonce);
 
     onMount(async () => {
-        console.log("Mounted");
-        apiGet("abengine/v1/campaigns", (data) => {
-            console.log(data);
-        });
         state = "loaded";
     });
+
+    function createCampaign() {
+        console.log("Create campaign");
+    }
+
+    const routes = {
+        "/": ListCampaigns,
+        "/create": CreateCampaign,
+        "/edit/:_id": EditCampaign,
+    }
 </script>
 
 <main>
-    
+    <Router {routes} />
 </main>

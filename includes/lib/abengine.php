@@ -12,6 +12,7 @@ class ABEngine extends EdjiSDK {
     }
 
     public function create_campaign($params) {
+        $params["user_id"] = get_option("abengine_user_id");
         return $this->post("api/campaign", $params);
     }
 }

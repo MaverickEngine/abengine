@@ -8,6 +8,14 @@ class ABEngineAPI {
     }
     
     public function register_api_routes() {
+        register_rest_route( 'abengine/v1', '/login', array(
+            'methods' => 'POST',
+            'callback' => array( $this, 'login' ),
+        ) );
+        register_rest_route( 'abengine/v1', '/logout', array(
+            'methods' => 'GET',
+            'callback' => array( $this, 'logout' ),
+        ) );
         register_rest_route( 'abengine/v1', '/campaign', array(
             'methods' => 'POST',
             'callback' => array( $this, 'create_campaign' ),
@@ -46,13 +54,44 @@ class ABEngineAPI {
         ) );
     }
 
+    public function login(WP_REST_Request $request) {
+        try {
+            $abengine = new ABEngine();
+            $data = $request->get_params();
+            // Check that we have a uid
+            if (!isset($data['email'])) {
+                throw new Exception("Missing email" );
+            }
+            if (!isset($data['password'])) {
+                throw new Exception("Missing password" );
+            }
+            $user = $abengine->login($data['email'], $data['password']);
+            // Save user's token
+            update_user_meta( get_current_user_id(), 'abengine_apikey', $user->apikey );
+            return rest_ensure_response(['status' => 'success', "user" => $user]);
+        } catch (Exception $e) {
+            return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );
+        }
+    }
+
+    public function logout(WP_REST_Request $request) {
+        try {
+            $abengine = new ABEngine();
+            $abengine->logout();
+            delete_user_meta( get_current_user_id(), 'abengine_apikey' );
+            return rest_ensure_response(['status' => 'success']);
+        } catch (Exception $e) {
+            return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );
+        }
+    }
+
     public function create_campaign(WP_REST_Request $request) {
         try {
             $abengine = new ABEngine();
-            $data = $request->get_json_params();
+            $data = $request->get_params();
             // Check that we have a uid
             if (!isset($data['uid'])) {
-                throw new Exception("Missing uid");
+                throw new Exception("Missing uid!" . json_encode($data));
             }
             $campaign = $abengine->create_campaign($data);
             return rest_ensure_response(['status' => 'success', "campaign" => $campaign]);

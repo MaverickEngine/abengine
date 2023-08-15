@@ -23,10 +23,17 @@ class EdjiSDK {
         }
     }
 
+    protected function _decode_response($response) {
+        $this->_handle_errors($response);
+        $body = wp_remote_retrieve_body($response);
+        $body = json_decode($body);
+        return $body;
+    }
+
     public function add_headers($data = null, $headers = array()) {
         $result = array(
             'headers' => array(
-                'Authorization' => 'Bearer ' . $this->apikey,
+                'x-api-key' => $this->apikey,
                 'Content-Type' => 'application/json',
             ),
         );
@@ -50,16 +57,17 @@ class EdjiSDK {
         } catch (Exception $e) {
             throw new Exception("ABEngine error: " . $e->getMessage());
         }
-        error_log("ABEngine: GET $url");
+        // error_log("ABEngine: GET $url");
         if (is_callable('vip_safe_wp_remote_get')) {
             $response = vip_safe_wp_remote_get($url, $args);
         } else {
             // phpcs:ignore
             $response = wp_remote_get($url, $args);
         }
-        error_log("ABEngine: GET response: " . print_r($response, true));
         $this->_handle_errors($response);
-        return $response;
+        // error_log("ABEngine: GET response: " . print_r($response, true));
+        return $this->_decode_response($response);
+        // return $response;
     }
 
     public function post($endpoint, $data = []) {
@@ -77,7 +85,7 @@ class EdjiSDK {
             $response = wp_remote_post($url, $args);
         }
         $this->_handle_errors($response);
-        return $response;
+        return $this->_decode_response($response);
     }
 
     public function put($endpoint, $data = []) {
@@ -95,6 +103,6 @@ class EdjiSDK {
             $response = wp_remote_put($url, $args);
         }
         $this->_handle_errors($response);
-        return $response;
+        return $this->_decode_response($response);
     }
 }
