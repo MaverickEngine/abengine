@@ -93,14 +93,34 @@ class EdjiSDK {
             $endpoint = ltrim($endpoint, "/");
             $url = "{$this->api_server}/{$endpoint}";
             $args = $this->add_headers($data);
+            $args['method'] = 'PUT';
         } catch (Exception $e) {
             throw new Exception("ABEngine error: " . $e->getMessage());
         }
-        if (is_callable('vip_safe_wp_remote_put')) {
-            $response = vip_safe_wp_remote_put($url, $args);
+        if (is_callable('vip_safe_wp_remote_post')) {
+            $response = vip_safe_wp_remote_post($url, $args);
         } else {
             // phpcs:ignore
-            $response = wp_remote_put($url, $args);
+            $response = wp_remote_post($url, $args);
+        }
+        $this->_handle_errors($response);
+        return $this->_decode_response($response);
+    }
+
+    public function delete($endpoint) {
+        try {
+            $endpoint = ltrim($endpoint, "/");
+            $url = "{$this->api_server}/{$endpoint}";
+            $args = $this->add_headers();
+            $args['method'] = 'DELETE';
+        } catch (Exception $e) {
+            throw new Exception("ABEngine error: " . $e->getMessage());
+        }
+        if (is_callable('vip_safe_wp_remote_post')) {
+            $response = vip_safe_wp_remote_post($url, $args);
+        } else {
+            // phpcs:ignore
+            $response = wp_remote_post($url, $args);
         }
         $this->_handle_errors($response);
         return $this->_decode_response($response);

@@ -1,40 +1,43 @@
 <script>
     import { onMount } from "svelte";
     import { apiPost } from "../libs/ajax.js";
+    import {push, pop, replace} from 'svelte-spa-router'
+    import SvelteWordpressAlert from "../components/svelte-wordpress/svelte-wordpress-alert.svelte";
+    import { generate_uid } from "../libs/uid.js";
 
     import Campaign from "./campaign.svelte";
     
-    let name = "";
-    let uid = "";
-    let running = false;
-    let start_date = "";
-    let end_date = "";
-    let data = "";
+    let campaign = {};
+    let is_loading = false;
+    let alert = null;
 
     onMount(async () => {
-        if (uid === "") {
-            uid = generate_uid();
+        if (campaign.uid === "") {
+            campaign.uid = generate_uid();
         }
     });
 
-    function generate_uid() {
-        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    }
-
     async function do_save() {
-        const result = await apiPost("abengine/v1/campaign", {
-            name,
-            uid,
-            running,
-            start_date,
-            end_date,
-            data
-        });
-        console.log(result);
+        try {
+            is_loading = true;
+            const result = await apiPost("abengine/v1/campaign", campaign);
+            console.log(result);
+            push("/edit/" + result.campaign.data._id);
+        } catch (error) {
+            alert = {
+                type: "error",
+                message: error.message || error.toString(),
+            };
+            console.error(error);
+        } finally {
+            is_loading = false;
+        }
     }
 </script>
 
 <div class="breadcrumbs">ABEngine &gt; <a href="#/">Campaigns</a> &gt; Create Campaign</div>
-
-<Campaign bind:uid={uid} bind:running={running} bind:start_date={start_date} bind:end_date={end_date} bind:data={data} bind:name={name} />
-<button class="button button-primary" on:click={do_save} on:keypress={do_save}>Create</button>
+{#if (alert)}
+<SvelteWordpressAlert type={alert.type}>{alert.message}</SvelteWordpressAlert>
+{/if}
+<Campaign bind:campaign={campaign} />
+<button class="button button-primary" on:click={do_save} on:keypress={do_save} disabled={is_loading}>Create</button>

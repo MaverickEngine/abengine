@@ -24,31 +24,39 @@ class ABEngineAPI {
             'methods' => 'GET',
             'callback' => array( $this, 'get_campaigns' ),
         ) );
-        register_rest_route( 'abengine/v1', '/campaign/(?P<campaign_id>\d+)', array(
+        register_rest_route( 'abengine/v1', '/campaign/(?P<campaign_id>[a-f\d]{24})', array(
             'methods' => 'GET',
             'callback' => array( $this, 'get_campaign' ),
         ) );
-        register_rest_route( 'abengine/v1', '/experiment/(?P<campaign_id>\d+)', array(
-            'methods' => 'POST',
-            'callback' => array( $this, 'create_experiment' ),
+        register_rest_route( 'abengine/v1', '/campaign/(?P<campaign_id>[a-f\d]{24})', array(
+            'methods' => 'PUT',
+            'callback' => array( $this, 'update_campaign' ),
         ) );
-        register_rest_route( 'abengine/v1', '/experiments/(?P<campaign_id>\d+)', array(
+        register_rest_route( 'abengine/v1', '/experiments/(?P<campaign_id>[a-f\d]{24})', array(
             'methods' => 'GET',
             'callback' => array( $this, 'get_experiments' ),
         ) );
-        register_rest_route( 'abengine/v1', '/experiment/(?P<experiment_id>\d+)', array(
+        register_rest_route( 'abengine/v1', '/experiment', array(
+            'methods' => 'POST',
+            'callback' => array( $this, 'create_experiment' ),
+        ) );
+        register_rest_route( 'abengine/v1', '/experiment/(?P<experiment_id>[a-f\d]{24})', array(
             'methods' => 'GET',
             'callback' => array( $this, 'get_experiment' ),
         ) );
-        register_rest_route( 'abengine/v1', '/experiment/(?P<experiment_id>\d+)', array(
+        register_rest_route( 'abengine/v1', '/experiment/(?P<experiment_id>[a-f\d]{24})', array(
             'methods' => 'PUT',
             'callback' => array( $this, 'update_experiment' ),
         ) );
-        register_rest_route( 'abengine/v1', '/hit/(?P<experiment_id>\d+)', array(
+        register_rest_route( 'abengine/v1', '/experiment/(?P<experiment_id>[a-f\d]{24})', array(
+            'methods' => 'DELETE',
+            'callback' => array( $this, 'delete_experiment' ),
+        ) );
+        register_rest_route( 'abengine/v1', '/hit/(?P<experiment_id>[a-f\d]{24})', array(
             'methods' => 'POST',
             'callback' => array( $this, 'register_hit' ),
         ) );
-        register_rest_route( 'abengine/v1', '/win/(?P<experiment_id>\d+)', array(
+        register_rest_route( 'abengine/v1', '/win/(?P<experiment_id>[a-f\d]{24})', array(
             'methods' => 'POST',
             'callback' => array( $this, 'register_win' ),
         ) );
@@ -102,8 +110,37 @@ class ABEngineAPI {
 
     public function get_campaign(WP_REST_Request $request) {
         try {
-            $test = new ABTest($request['test_id']);
-            return rest_ensure_response(['status' => 'success', "test" => $test->get_data()]);
+            $id = $request['campaign_id'];
+            $abengine = new ABEngine();
+            $campaign = $abengine->get_campaign($id);
+            return rest_ensure_response(['status' => 'success', "campaign" => $campaign]);
+        } catch (Exception $e) {
+            return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );
+        }
+    }
+
+    public function update_campaign(WP_REST_Request $request) {
+        try {
+            $id = $request['campaign_id'];
+            $abengine = new ABEngine();
+            $data = $request->get_params();
+            $campaign = $abengine->update_campaign($id, $data);
+            return rest_ensure_response(['status' => 'success', "campaign" => $campaign]);
+        } catch (Exception $e) {
+            return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );
+        }
+    }
+
+    public function create_experiment(WP_REST_Request $request) {
+        try {
+            $abengine = new ABEngine();
+            $data = $request->get_params();
+            // Check that we have a uid
+            if (!isset($data['uid'])) {
+                throw new Exception("Missing uid!" . json_encode($data));
+            }
+            $experiment = $abengine->create_experiment($data);
+            return rest_ensure_response(['status' => 'success', "experiment" => $experiment]);
         } catch (Exception $e) {
             return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );
         }
@@ -116,6 +153,40 @@ class ABEngineAPI {
             return rest_ensure_response(['status' => 'success', "campaigns" => $campaigns]);
         } catch (Exception $e) {
             return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );
+        }
+    }
+
+    public function get_experiments(WP_REST_Request $request) {
+        try {
+            $id = $request['campaign_id'];
+            $abengine = new ABEngine();
+            $experiments = $abengine->get_experiments($id);
+            return rest_ensure_response(['status' => 'success', "experiments" => $experiments]);
+        } catch (Exception $e) {
+            return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );
+        }        
+    }
+
+    public function update_experiment(WP_REST_Request $request) {
+        try {
+            $id = $request['experiment_id'];
+            $abengine = new ABEngine();
+            $data = $request->get_params();
+            $experiment = $abengine->update_experiment($id, $data);
+            return rest_ensure_response(['status' => 'success', "experiment" => $experiment]);
+        } catch (Exception $e) {
+            return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );            
+        }
+    }
+
+    public function delete_experiment(WP_REST_Request $request) {
+        try {
+            $id = $request['experiment_id'];
+            $abengine = new ABEngine();
+            $experiment = $abengine->delete_experiment($id);
+            return rest_ensure_response(['status' => 'success', "experiment" => $experiment]);
+        } catch (Exception $e) {
+            return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );            
         }
     }
 }

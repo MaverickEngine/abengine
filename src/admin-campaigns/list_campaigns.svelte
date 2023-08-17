@@ -3,6 +3,35 @@
     import { apiGet } from "../libs/ajax.js";
     import {link} from 'svelte-spa-router'
 
+    import SvelteWordpressListTable from "../components/svelte-wordpress/svelte-wordpress-list_table.svelte";
+
+    const headers = [
+        {
+            name: "select",
+            key: "select",
+            type: "select",
+        },
+        {
+            name: "Name",
+            key: "link_name",
+            type: "unsafe",
+        },
+        {
+            name: "Start Date",
+            key: "start_date",
+            type: "date",
+        },
+        {
+            name: "End Date",
+            key: "end_date",
+            type: "date",
+        },
+        {
+            name: "Running",
+            key: "running",
+            type: "boolean",
+        },
+    ]
 
     let campaigns = [];
     let state = "loading";
@@ -10,6 +39,9 @@
     onMount(async () => {
         const response = await apiGet("abengine/v1/campaigns");
         campaigns = response.campaigns.data;
+        for(let campaign of campaigns) {
+            campaign.link_name = `<a href="#/edit/${campaign._id}">${campaign.name}</a>`;
+        }
         state = "loaded";
     });
 </script>
@@ -19,7 +51,5 @@
         <div class="breadcrumbs">ABEngine &gt; Campaigns</div>
         <a href="#/create"><button class="button button-primary">Create new campaign</button></a>
     </div>
-    {#each campaigns as campaign}
-    <div>Campaign {campaign}</div>
-    {/each}
+    <SvelteWordpressListTable {headers} bind:data={campaigns} />
 </div>

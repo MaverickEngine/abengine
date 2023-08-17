@@ -33,5 +33,6 @@ class ABEngineAdminCampaigns {
             "restUrl" => rest_url('/abengine/v1/'),
             "nonce" => wp_create_nonce('wp_rest'),
         ) );
+        wp_enqueue_style( "abengine-admin-campaigns", plugin_dir_url(__FILE__) . "../../dist/abengine-admin.css", array(), ABENGINE_SCRIPT_VERSION, "all");
     }
 }

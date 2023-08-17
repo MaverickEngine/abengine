@@ -103,7 +103,7 @@ const config = [
 				preprocess: preprocess({ defaults: { style: 'scss' } })
 			}),
 			typescript(),
-			css({ output: 'abengine-admin-tests.css' }),
+			css({ output: 'abengine-admin.css' }),
 			nodeResolve({
 				browser: true,
 				dedupe: ['svelte']

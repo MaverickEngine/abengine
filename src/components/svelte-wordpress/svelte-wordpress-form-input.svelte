@@ -20,6 +20,19 @@
     export let cols = null;
     export let wrap = null;
 
+    
+    $: if (type === "date" && value) {
+        value = parse_date(value);
+    }
+    
+
+    function parse_date(d) {
+        const date = new Date(d);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+    }
 </script>
 
 {#if (type === "hidden")}
