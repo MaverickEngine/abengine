@@ -3,7 +3,7 @@ import commonjs from '@rollup/plugin-commonjs';
 // import resolve from '@rollup/plugin-node-resolve';
 // import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
-import scss from 'rollup-plugin-scss'
+import less from 'rollup-plugin-less'
 import css from 'rollup-plugin-css-only';
 // import preprocess from 'svelte-preprocess';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -54,6 +54,7 @@ const config = [
 			nodeResolve({
 				browser: true,
 			}),
+			less({ output: 'dist/abengine-client.css' }),
 			commonjs(),
 			typescript(),
 			json(),

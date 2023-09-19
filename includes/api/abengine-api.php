@@ -28,6 +28,10 @@ class ABEngineAPI {
             'methods' => 'GET',
             'callback' => array( $this, 'get_campaign' ),
         ) );
+        register_rest_route( 'abengine/v1', '/campaign/uid/(?P<uid>.*)', array(
+            'methods' => 'GET',
+            'callback' => array( $this, 'get_campaign_by_uid' ),
+        ) );
         register_rest_route( 'abengine/v1', '/campaign/(?P<campaign_id>[a-f\d]{24})', array(
             'methods' => 'PUT',
             'callback' => array( $this, 'update_campaign' ),
@@ -113,6 +117,17 @@ class ABEngineAPI {
             $id = $request['campaign_id'];
             $abengine = new ABEngine();
             $campaign = $abengine->get_campaign($id);
+            return rest_ensure_response(['status' => 'success', "campaign" => $campaign]);
+        } catch (Exception $e) {
+            return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );
+        }
+    }
+
+    public function get_campaign_by_uid(WP_REST_Request $request) {
+        try {
+            $uid = $request['uid'];
+            $abengine = new ABEngine();
+            $campaign = $abengine->get_campaign_by_uid($uid);
             return rest_ensure_response(['status' => 'success', "campaign" => $campaign]);
         } catch (Exception $e) {
             return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );

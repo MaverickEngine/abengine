@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const ABENGINE_SCRIPT_VERSION = "0.0.2";
+const ABENGINE_SCRIPT_VERSION = "0.0.3";
 const ABENGINE_DB_VERSION = "0.0.6";
 
 function abengine_admin_init() {
