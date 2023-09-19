@@ -5,16 +5,16 @@ class ABEngineAdminCampaigns {
     ];
 
     public function __construct() {
-        add_action('admin_menu', [ $this, 'tests_page' ]);
+        add_action('admin_menu', [ $this, 'campaigns_page' ]);
     }
 
-    public function tests_page() {
+    public function campaigns_page() {
         add_submenu_page(
             'abengine',
 			'ABEngine Campaigns',
 			'Campaigns',
 			'manage_options',
-			'abengine_campaigns',
+			'abengine',
 			[ $this, 'abengine_campaigns' ]
 		);
     }

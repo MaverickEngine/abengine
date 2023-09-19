@@ -13,7 +13,7 @@ class ABEngine extends EdjiSDK {
     }
 
     public function get_campaigns() {
-        return $this->get("api/campaign");
+        return $this->get("api/campaign?sort[createdAt]=-1");
     }
 
     public function create_campaign($params) {

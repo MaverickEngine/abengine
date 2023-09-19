@@ -17,6 +17,11 @@
             type: "unsafe",
         },
         {
+            name: "Created",
+            key: "createdAt",
+            type: "date",
+        },
+        {
             name: "Start Date",
             key: "start_date",
             type: "date",

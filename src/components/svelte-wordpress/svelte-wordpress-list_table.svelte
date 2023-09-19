@@ -18,6 +18,13 @@
 
     export let headers: Header[] = [];
     export let data = [];
+
+    function format_date(date: string) {
+        if (!date) return "";
+        const d = new Date(date);
+        // yyyy-mm-dd
+        return `${d.getFullYear()}-${('0' + (d.getMonth()+1)).slice(-2)}-${('0' + d.getDate()).slice(-2)}`;
+    }
 </script>
 
 <table class="wp-list-table widefat fixed striped table-view-list">
@@ -52,7 +59,7 @@
                     <a href={row[header.key]}>{row[header.key]}</a>
                 </td>
                 {:else if header.type === "date"}
-                <td>{row[header.key]}</td>
+                <td>{format_date(row[header.key])}</td>
                 {:else if header.type === "number"}
                 <td>{row[header.key]}</td>
                 {:else if header.type === "boolean"}
