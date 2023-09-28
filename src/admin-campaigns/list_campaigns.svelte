@@ -1,9 +1,9 @@
 <script>
     import { onMount } from "svelte";
-    import { apiGet } from "../libs/ajax.js";
+    import { apiGet } from "wp-ajax";
     import {link} from 'svelte-spa-router'
 
-    import SvelteWordpressListTable from "../components/svelte-wordpress/svelte-wordpress-list_table.svelte";
+    import { ListTable } from "svelte-wordpress-components";
 
     const headers = [
         {
@@ -56,5 +56,5 @@
         <div class="breadcrumbs">ABEngine &gt; Campaigns</div>
         <a href="#/create"><button class="button button-primary">Create new campaign</button></a>
     </div>
-    <SvelteWordpressListTable {headers} bind:data={campaigns} />
+    <ListTable {headers} bind:data={campaigns} />
 </div>

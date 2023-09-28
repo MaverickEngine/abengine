@@ -1,8 +1,8 @@
 <script>
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
-    import { apiGet, apiPut, apiPost, apiDelete } from "../libs/ajax.js";
-    import SvelteWordpressAlert from "../components/svelte-wordpress/svelte-wordpress-alert.svelte";
+    import { apiGet, apiPut, apiPost, apiDelete } from "wp-ajax";
+    import { Alert } from "svelte-wordpress-components";
     import { generate_uid } from "../libs/uid.js";
 
     import Campaign from "./campaign.svelte";
@@ -134,7 +134,7 @@
 </div>
 {#if (alert)}
 <div transition:slide>
-<SvelteWordpressAlert type={alert.type} dismissible={true}>{alert.message}</SvelteWordpressAlert>
+<Alert type={alert.type} dismissible={true}>{alert.message}</Alert>
 </div>
 {/if}
 <nav class="nav-tab-wrapper">

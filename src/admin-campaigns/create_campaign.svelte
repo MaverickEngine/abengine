@@ -1,8 +1,8 @@
 <script>
     import { onMount } from "svelte";
-    import { apiPost } from "../libs/ajax.js";
-    import {push, pop, replace} from 'svelte-spa-router'
-    import SvelteWordpressAlert from "../components/svelte-wordpress/svelte-wordpress-alert.svelte";
+    import { apiPost } from "wp-ajax";
+    import { push, pop, replace } from 'svelte-spa-router'
+    import { Alert } from "svelte-wordpress-components";
     import { generate_uid } from "../libs/uid.js";
 
     import Campaign from "./campaign.svelte";
@@ -37,7 +37,7 @@
 
 <div class="breadcrumbs">ABEngine &gt; <a href="#/">Campaigns</a> &gt; Create Campaign</div>
 {#if (alert)}
-<SvelteWordpressAlert type={alert.type}>{alert.message}</SvelteWordpressAlert>
+<Alert type={alert.type}>{alert.message}</Alert>
 {/if}
 <Campaign bind:campaign={campaign} />
 <button class="button button-primary" on:click={do_save} on:keypress={do_save} disabled={is_loading}>Create</button>
