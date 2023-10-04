@@ -890,6 +890,10 @@ svelte-spa-router@^3.3.0:
   dependencies:
     regexparam "2.0.1"
 
+"svelte-wordpress-components@file:../../../../../svelte-wordpress-components":
+  version "0.0.1"
+  resolved "file:../../../../../svelte-wordpress-components"
+
 svelte@^3.23.0, svelte@^3.49.0, svelte@>=3.5.0:
   version "3.49.0"
   resolved "https://registry.npmjs.org/svelte/-/svelte-3.49.0.tgz"
@@ -926,6 +930,11 @@ tslib@^1.10.0:
   version "4.7.4"
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.7.4.tgz"
   integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
+
+wp-ajax@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/wp-ajax/-/wp-ajax-0.1.0.tgz"
+  integrity sha512-mwBKk5KNPVhmegoL/VrWP6PP5Y8FZVdVGLbywQV41EP4Pz8Zy6BKbupRRtafOSVGAgP09JKlWRhj47N6hCMhiw==
 
 wrappy@1:
   version "1.0.2"

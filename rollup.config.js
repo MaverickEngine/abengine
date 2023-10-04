@@ -12,6 +12,7 @@ import strip from '@rollup/plugin-strip';
 import typescript from '@rollup/plugin-typescript';
 import svelte from 'rollup-plugin-svelte';
 import preprocess from 'svelte-preprocess';
+import { type } from 'os';
 
 
 const production = !process.env.ROLLUP_WATCH;
@@ -58,7 +59,6 @@ const config = [
 			commonjs(),
 			typescript(),
 			json(),
-			!production && serve(),
 			production && terser() && strip()
 		]
 	},
@@ -77,7 +77,7 @@ const config = [
 				browser: true,
 			}),
 			commonjs(),
-			!production && serve(),
+			typescript(),
 			production && terser() && strip()
 		]
 	},
@@ -101,19 +101,49 @@ const config = [
 					// enable run-time checks when not in production
 					dev: !production
 				},
-				preprocess: preprocess({ defaults: { style: 'scss' } })
+				preprocess: preprocess({ defaults: { style: 'scss' } }),
+				globals: [
+					'wp'
+				]
 			}),
-			typescript(),
 			css({ output: 'abengine-admin.css' }),
 			nodeResolve({
 				browser: true,
 				dedupe: ['svelte']
 			}),
 			commonjs(),
-			!production && serve(),
+			typescript(),
 			production && terser() && strip()
 		]
-	}
+	},
+	{
+		input: "components/titles/src/abengine-titles.js",
+		output: [
+			{
+				sourcemap: true,
+				format: 'iife',
+				name: "abengine_titles",
+				file: "components/titles/dist/abengine-titles.js"
+			},
+		],
+		plugins: [
+			svelte({
+				compilerOptions: {
+					// enable run-time checks when not in production
+					dev: !production
+				},
+				preprocess: preprocess({ defaults: { style: 'scss' } })
+			}),
+			typescript(),
+			css({ output: 'abengine-titles.css' }),
+			nodeResolve({
+				browser: true,
+				dedupe: ['svelte']
+			}),
+			commonjs(),
+			production && terser() && strip()
+		]
+	},
 ];
 
 export default config;

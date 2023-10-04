@@ -47,6 +47,13 @@
                 <?php
                     }
                 ?>
+                <tr>
+                    <th scope="row"><?php _e("Enable titles", "abengine") ?></th>
+                    <td>
+                        <input type="checkbox" name="abengine_enable_titles" value="1" <?php checked(1, get_option('abengine_enable_titles', 0)) ?>>
+                        <div><?php _e("AB test post titles", "abengine") ?></div>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <?php submit_button(); ?>

@@ -47,3 +47,10 @@ function abengine_database_setup() {
     $abengine_db->setup();
 }
 add_action( 'init', 'abengine_database_setup', 2 );
+
+// ABEngine Titles
+function abengine_titles_init() {
+    require_once( plugin_dir_path( __FILE__ ) . 'components/titles/abengine-titles.php' );
+    new ABEngineTitles();
+}
+add_action( 'init', 'abengine_titles_init', 4 );

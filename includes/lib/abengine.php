@@ -42,6 +42,33 @@ class ABEngine extends EdjiSDK {
         return $this->put("api/experiment/{$experiment_id}", $params);
     }
 
+    public function upsert_experiment($experiment) {
+        if (isset($experiment["_id"])) {
+            $experiment_id = $experiment["_id"];
+            unset($experiment["_id"]);
+            return $this->update_experiment($experiment_id, $experiment);
+        }
+        // See if this experiment already exists
+        $campaign_id = $experiment["campaign_id"];
+        $uid = $experiment["uid"];
+        $experiments = $this->get("api/experiment?filter[campaign_id]=$campaign_id&filter[uid]=$uid");
+        if (count($experiments->data) > 0) {
+            $check_experiment = (Array) $experiments->data[0];
+            $experiment_id = $check_experiment["_id"];
+            return $this->update_experiment($experiment_id, $experiment);
+        } else {
+            return $this->create_experiment($experiment);
+        }
+    }
+
+    public function update_experiments($experiments) {
+        $result = [];
+        foreach ($experiments["experiments"] as $experiment) {
+            $result[] = $this->upsert_experiment($experiment);
+        }
+        return $result;
+    }
+
     public function get_experiments($campaign_id) {
         return $this->get("api/experiment?filter[campaign_id]={$campaign_id}");
     }

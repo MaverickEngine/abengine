@@ -5,6 +5,7 @@ class ABEngineAdminSettings {
         "abengine_apikey",
         "abengine_api_server",
         "abengine_user_id",
+        "abengine_enable_titles",
     ];
     
     public function __construct() {

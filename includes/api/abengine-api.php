@@ -11,58 +11,107 @@ class ABEngineAPI {
         register_rest_route( 'abengine/v1', '/login', array(
             'methods' => 'POST',
             'callback' => array( $this, 'login' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
         ) );
         register_rest_route( 'abengine/v1', '/logout', array(
             'methods' => 'GET',
             'callback' => array( $this, 'logout' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
         ) );
         register_rest_route( 'abengine/v1', '/campaign', array(
             'methods' => 'POST',
             'callback' => array( $this, 'create_campaign' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
         ) );
         register_rest_route( 'abengine/v1', '/campaigns', array(
             'methods' => 'GET',
             'callback' => array( $this, 'get_campaigns' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
         ) );
         register_rest_route( 'abengine/v1', '/campaign/(?P<campaign_id>[a-f\d]{24})', array(
             'methods' => 'GET',
             'callback' => array( $this, 'get_campaign' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
         ) );
         register_rest_route( 'abengine/v1', '/campaign/uid/(?P<uid>.*)', array(
             'methods' => 'GET',
             'callback' => array( $this, 'get_campaign_by_uid' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
         ) );
         register_rest_route( 'abengine/v1', '/campaign/(?P<campaign_id>[a-f\d]{24})', array(
             'methods' => 'PUT',
             'callback' => array( $this, 'update_campaign' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
         ) );
         register_rest_route( 'abengine/v1', '/experiments/(?P<campaign_id>[a-f\d]{24})', array(
             'methods' => 'GET',
             'callback' => array( $this, 'get_experiments' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
         ) );
         register_rest_route( 'abengine/v1', '/experiment', array(
             'methods' => 'POST',
             'callback' => array( $this, 'create_experiment' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
         ) );
         register_rest_route( 'abengine/v1', '/experiment/(?P<experiment_id>[a-f\d]{24})', array(
             'methods' => 'GET',
             'callback' => array( $this, 'get_experiment' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
         ) );
         register_rest_route( 'abengine/v1', '/experiment/(?P<experiment_id>[a-f\d]{24})', array(
             'methods' => 'PUT',
             'callback' => array( $this, 'update_experiment' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
+        ) );
+        register_rest_route( 'abengine/v1', '/experiments', array(
+            'methods' => 'PUT',
+            'callback' => array( $this, 'update_experiments' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
         ) );
         register_rest_route( 'abengine/v1', '/experiment/(?P<experiment_id>[a-f\d]{24})', array(
             'methods' => 'DELETE',
             'callback' => array( $this, 'delete_experiment' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
         ) );
         register_rest_route( 'abengine/v1', '/hit/(?P<experiment_id>[a-f\d]{24})', array(
             'methods' => 'POST',
             'callback' => array( $this, 'register_hit' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
         ) );
         register_rest_route( 'abengine/v1', '/win/(?P<experiment_id>[a-f\d]{24})', array(
             'methods' => 'POST',
             'callback' => array( $this, 'register_win' ),
+            'permission_callback' => function () {
+                return current_user_can( 'edit_others_posts' );
+            }
         ) );
     }
 
@@ -200,6 +249,17 @@ class ABEngineAPI {
             $abengine = new ABEngine();
             $experiment = $abengine->delete_experiment($id);
             return rest_ensure_response(['status' => 'success', "experiment" => $experiment]);
+        } catch (Exception $e) {
+            return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );            
+        }
+    }
+
+    public function update_experiments(WP_REST_Request $request) {
+        try {
+            $abengine = new ABEngine();
+            $data = $request->get_params();
+            $experiments = $abengine->update_experiments($data);
+            return rest_ensure_response(['status' => 'success', "experiments" => $experiments]);
         } catch (Exception $e) {
             return new WP_Error( 'abengine_api_error', $e->getMessage(), array( 'status' => 500 ) );            
         }
