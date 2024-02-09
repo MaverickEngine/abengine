@@ -9,7 +9,34 @@ class ABEngine extends EdjiSDK {
         $this->abengine_server = get_option('abengine_server', '');
         if (empty($this->abengine_server)) {
             $this->enabled = false;
+            return;
         }
+        $this->register_hooks();
+    }
+
+    protected function register_hooks() {
+        add_action("abengine_test", [$this, "test"], 10, 0);
+        add_action("abengine_get_campaigns", [$this, "get_campaigns"], 10, 0);
+        add_action("abengine_create_campaign", [$this, "create_campaign"], 10, 1);
+        add_action("abengine_get_campaign", [$this, "get_campaign"], 10, 1);
+        add_action("abengine_update_campaign", [$this, "update_campaign"], 10, 2);
+        add_action("abengine_create_experiment", [$this, "create_experiment"], 10, 1);
+        add_action("abengine_get_experiment", [$this, "get_experiment"], 10, 1);
+        add_action("abengine_update_experiment", [$this, "update_experiment"], 10, 2);
+        add_action("abengine_upsert_experiment", [$this, "upsert_experiment"], 10, 1);
+        add_action("abengine_update_experiments", [$this, "update_experiments"], 10, 1);
+        add_action("abengine_get_experiments", [$this, "get_experiments"], 10, 1);
+        add_action("abengine_delete_experiment", [$this, "delete_experiment"], 10, 1);
+        add_action("abengine_get_campaign_by_uid", [$this, "get_campaign_by_uid"], 10, 1);
+        add_action("abengine_serve", [$this, "serve"], 10, 1);
+        add_action("abengine_win", [$this, "win"], 10, 1);
+        add_action("abengine_autowin", [$this, "autowin"], 10, 1);
+    }
+
+    public function test() {
+        $result = $this->get("api/test");
+        do_action("abengine_test_result", $result);
+        return $result;
     }
 
     public function get_campaigns() {
